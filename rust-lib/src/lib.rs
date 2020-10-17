@@ -189,31 +189,6 @@ struct IssueArgs {
     prune_seals: Vec<SealSpec>,
 }
 
-fn _issue(runtime: &COpaqueStruct, json: *mut c_char) -> Result<(), String> {
-    let runtime = Runtime::from_opaque(runtime)?;
-    let data: IssueArgs =
-        serde_json::from_str(ptr_to_string(json)?.as_str()).map_err(|e| format!("{:?}", e))?;
-    info!("{:?}", data);
-
-    runtime
-        .issue(
-            data.network,
-            data.ticker,
-            data.name,
-            data.description,
-            data.issue_structure,
-            data.allocations,
-            data.precision,
-            data.prune_seals,
-        )
-        .map_err(|e| format!("{:?}", e))
-}
-
-#[no_mangle]
-pub extern "C" fn issue(runtime: &COpaqueStruct, json: *mut c_char) -> CResult {
-    _issue(runtime, json).into()
-}
-
 #[derive(Debug, Deserialize)]
 struct TransferArgs {
     inputs: Vec<OutPoint>,

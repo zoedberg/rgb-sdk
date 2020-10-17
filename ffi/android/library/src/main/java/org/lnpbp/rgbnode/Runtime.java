@@ -28,16 +28,6 @@ public class Runtime {
         }
     }
 
-    public void issue(final String network, final String ticker, final String name, final String description, final String issueStructure, final List<IssueArgs.CoinAllocation> allocations, final Integer precision, final List<IssueArgs.SealSpec> pruneSeals, final Integer dustLimit) throws RuntimeException {
-        final IssueArgs args = new IssueArgs(network, ticker, name, description, issueStructure, allocations, precision, pruneSeals, dustLimit);
-        try {
-            final String jsonArgs = mapper.writeValueAsString(args);
-            rgb_node.issue(this.runtime, jsonArgs);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     public void transfer(List<String> inputs, List<IssueArgs.CoinAllocation> allocate, String invoice, String prototype_psbt, Integer fee, String change, String consignment_file, String transaction_file) throws RuntimeException {
         final TransferArgs args = new TransferArgs(inputs, allocate, invoice, prototype_psbt, fee, change, consignment_file, transaction_file);
         try {
