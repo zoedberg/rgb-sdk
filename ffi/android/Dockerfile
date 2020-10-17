@@ -1,18 +1,5 @@
 FROM rustlang/rust:nightly-slim as builder
 
-RUN echo '[target.aarch64-linux-android]\n\
-ar = "/root/sdk/ndk/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android-ar"\n\
-linker = "/root/sdk/ndk/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android26-clang"\n\n\
-[target.x86_64-linux-android]\n\
-ar = "/root/sdk/ndk/toolchains/llvm/prebuilt/linux-x86_64/bin/x86_64-linux-android-ar"\n\
-linker = "/root/sdk/ndk/toolchains/llvm/prebuilt/linux-x86_64/bin/x86_64-linux-android26-clang"\n\n\
-[target.armv7-linux-androideabi]\n\
-ar = "/root/sdk/ndk/toolchains/llvm/prebuilt/linux-x86_64/bin/arm-linux-androideabi-ar"\n\
-linker = "/root/sdk/ndk/toolchains/llvm/prebuilt/linux-x86_64/bin/armv7a-linux-androideabi26-clang"\n\n\
-[target.i686-linux-android]\n\
-ar = "/root/sdk/ndk/toolchains/llvm/prebuilt/linux-x86_64/bin/i686-linux-android-ar"\n\
-linker = "/root/sdk/ndk/toolchains/llvm/prebuilt/linux-x86_64/bin/i686-linux-android26-clang"' > $CARGO_HOME/config
-
 # mkdir required to install openjdk on slim images
 RUN mkdir -p /usr/share/man/man1 && \
     apt-get update && \
@@ -23,24 +10,43 @@ RUN mkdir -p /usr/share/man/man1 && \
 
 WORKDIR /tmp
 
-ENV ANDROID_SDK_ROOT=/root/sdk
-ENV NDK_HOME=$ANDROID_SDK_ROOT/ndk
-
-RUN wget https://dl.google.com/android/repository/android-ndk-r20b-linux-x86_64.zip && \
-    unzip android-ndk-*.zip && \
-    mkdir -p $NDK_HOME && \
-    mv android-ndk-r20b/* $NDK_HOME && \
-    wget https://dl.google.com/android/repository/commandlinetools-linux-6609375_latest.zip && \
-    unzip commandlinetools-linux-*_latest.zip && \
-    mv tools $ANDROID_SDK_ROOT/ && \
-    rm -rf /tmp/*
-
 RUN wget https://freefr.dl.sourceforge.net/project/swig/swig/swig-4.0.1/swig-4.0.1.tar.gz && \
     tar xf swig-*.tar.gz && \
     cd swig-* && \
     ./configure && make -j12 && \
     make install && \
     rm -rf /tmp/*
+
+ENV ANDROID_SDK_ROOT=/root/sdk
+ENV NDK_HOME=$ANDROID_SDK_ROOT/ndk/20.1.5948944
+
+RUN wget https://dl.google.com/android/repository/commandlinetools-linux-6609375_latest.zip && \
+    unzip commandlinetools-linux-*_latest.zip && \
+    mkdir $ANDROID_SDK_ROOT && \
+    mv tools $ANDROID_SDK_ROOT/ && \
+    rm -rf /tmp/*
+
+RUN yes | $ANDROID_SDK_ROOT/tools/bin/sdkmanager --sdk_root=$ANDROID_SDK_ROOT \
+        "platform-tools" \
+        "build-tools;29.0.3" \
+        "platforms;android-29" \
+        "ndk;20.1.5948944" \
+        "cmake;3.10.2.4988404" \
+        "extras;google;m2repository" \
+        "extras;android;m2repository"
+
+RUN echo '[target.aarch64-linux-android]\n\
+ar = "/root/sdk/ndk/20.1.5948944/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android-ar"\n\
+linker = "/root/sdk/ndk/20.1.5948944/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android26-clang"\n\n\
+[target.x86_64-linux-android]\n\
+ar = "/root/sdk/ndk/20.1.5948944/toolchains/llvm/prebuilt/linux-x86_64/bin/x86_64-linux-android-ar"\n\
+linker = "/root/sdk/ndk/20.1.5948944/toolchains/llvm/prebuilt/linux-x86_64/bin/x86_64-linux-android26-clang"\n\n\
+[target.armv7-linux-androideabi]\n\
+ar = "/root/sdk/ndk/20.1.5948944/toolchains/llvm/prebuilt/linux-x86_64/bin/arm-linux-androideabi-ar"\n\
+linker = "/root/sdk/ndk/20.1.5948944/toolchains/llvm/prebuilt/linux-x86_64/bin/armv7a-linux-androideabi26-clang"\n\n\
+[target.i686-linux-android]\n\
+ar = "/root/sdk/ndk/20.1.5948944/toolchains/llvm/prebuilt/linux-x86_64/bin/i686-linux-android-ar"\n\
+linker = "/root/sdk/ndk/20.1.5948944/toolchains/llvm/prebuilt/linux-x86_64/bin/i686-linux-android26-clang"' > $CARGO_HOME/config
 
 RUN rustup target add \
         aarch64-linux-android \
@@ -51,15 +57,7 @@ RUN rustup target add \
 COPY ffi/android /rgb-sdk/ffi/android
 COPY rust-lib /rgb-sdk/rust-lib
 
-ENV ANDROID_HOME=$ANDROID_SDK_ROOT
 ENV JAVA_HOME="/usr/lib/jvm/java-11-openjdk-amd64/"
-
-RUN yes | $ANDROID_SDK_ROOT/tools/bin/sdkmanager --sdk_root=$ANDROID_SDK_ROOT \
-        "platform-tools" \
-        "build-tools;29.0.3" \
-        "platforms;android-29" \
-        "extras;google;m2repository" \
-        "extras;android;m2repository"
 
 RUN cd /rgb-sdk/ffi/android && \
     ./gradlew build
