@@ -1,0 +1,25 @@
+name: Docker Build
+
+on:
+  push:
+    branches: [ master ]
+    paths:
+      - '**/Dockerfile'
+  pull_request:
+    branches: [ master ]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  dockerizations:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build Node.js bindings dockerization
+        uses: docker/build-push-action@v2
+        with:
+          file: ffi/nodejs/Dockerfile
+      - name: Build Android bindings dockerization
+        uses: docker/build-push-action@v2
+        with:
+          file: ffi/android/Dockerfile
