@@ -1,0 +1,23 @@
+name: Docker Build
+
+on:
+  push:
+    branches: [ master ]
+    paths:
+      - '**/Dockerfile'
+      - 'rust-lib/Cargo.*'
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  dockerizations:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build Android bindings dockerization
+        uses: docker/build-push-action@v2
+        with:
+          file: ffi/android/Dockerfile
+      - name: Build Node.js bindings dockerization
+        uses: docker/build-push-action@v2
+        with:
+          file: ffi/nodejs/Dockerfile
