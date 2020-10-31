@@ -23,15 +23,19 @@ const transferData = {
 
 ex.start_rgb(config.network, config.stash_endpoint, JSON.stringify(config.contract_endpoints), config.threaded,
              config.datadir)
-    /*.then(r => ex.issue(r, JSON.stringify({
-        network: "testnet",
-        ticker: "USDT",
-        name: "USD Tether",
-        issue_structure: "SingleIssue",
-        allocations: [{ coins: 100, vout:0, txid: "0313ba7cfcaa66029a1a63918ebc426259f00953016c461663315d1bf6b83ab4" }],
-        precision: 0,
-    })))*/
-    .then(r => ex.transfer(r, JSON.stringify(transferData.inputs), JSON.stringify(transferData.allocate),
+    .then(r => {
+        console.log('issue about to start')
+        return ex.issue(r, JSON.stringify({
+            network: "testnet",
+            ticker: "USDT",
+            name: "USD Tether",
+            issue_structure: "SingleIssue",
+            allocations: [{ coins: 100, vout:0, txid: "0313ba7cfcaa66029a1a63918ebc426259f00953016c461663315d1bf6b83ab4" }],
+            precision: 0,
+        }))})
+    .then(r => {
+        console.log('transfer about to start')
+        return ex.transfer(r, JSON.stringify(transferData.inputs), JSON.stringify(transferData.allocate),
                            transferData.invoice, transferData.prototype_psbt, transferData.consignment_file,
-                           transferData.transaction_file))
-    .catch(e => console.log(e))
+                           transferData.transaction_file)})
+    .catch(e => console.log('ERR: ' + e))
