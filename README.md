@@ -1,5 +1,7 @@
 # RGB SDK
 
+![Build](https://github.com/LNP-BP/rgb-sdk/workflows/Build/badge.svg)
+![Docker Build](https://github.com/LNP-BP/rgb-sdk/workflows/Docker%20Build/badge.svg)
 ![Lints](https://github.com/LNP-BP/rgb-sdk/workflows/Lints/badge.svg)
 
 This repository contains FFI bindings and SDK for wallet & server-side development,
