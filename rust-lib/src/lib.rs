@@ -158,6 +158,10 @@ enum RequestError {
     /// Impossible error: {_0}
     #[from]
     Infallible(std::convert::Infallible),
+
+    /// Invalid ZMQ socket address: {_0}
+    #[from]
+    Address(rgb::lnpbp::lnp::AddrError),
 }
 
 fn _start_rgb(
@@ -171,8 +175,7 @@ fn _start_rgb(
     let network = bp::Chain::from_str(c_network.to_str()?)?;
 
     let c_stash_endpoint = unsafe { CStr::from_ptr(stash_endpoint) };
-    let stash_endpoint =
-        ZmqSocketAddr::Ipc(c_stash_endpoint.to_str()?.to_string());
+    let stash_endpoint = ZmqSocketAddr::from_str(c_stash_endpoint.to_str()?)?;
 
     let contract_endpoints: HashMap<ContractName, String> =
         serde_json::from_str(&ptr_to_string(contract_endpoints)?)?;
@@ -186,7 +189,7 @@ fn _start_rgb(
         contract_endpoints: contract_endpoints
             .into_iter()
             .map(|(k, v)| -> Result<_, RequestError> {
-                Ok((k, ZmqSocketAddr::Ipc(v.parse()?)))
+                Ok((k, ZmqSocketAddr::from_str(&v)?))
             })
             .collect::<Result<_, _>>()?,
         threaded: threaded,
