@@ -364,7 +364,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "org.lnp-bp.RGB-Demo-App";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTS_MACCATALYST = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = ../../rgb_node.h;
+				SWIFT_OBJC_BRIDGING_HEADER = "../../rust-lib/rgb_node.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -394,7 +394,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "org.lnp-bp.RGB-Demo-App";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTS_MACCATALYST = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = ../../rgb_node.h;
+				SWIFT_OBJC_BRIDGING_HEADER = "../../rust-lib/rgb_node.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
