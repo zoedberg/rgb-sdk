@@ -1,0 +1,50 @@
+# protected workflows app configuration file
+#
+# the goal of this application is to prevent PRs from forks on public projects
+# to run on self-hosted runners, in order to avoid security implications
+#
+# references:
+# - see https://github.com/LNP-BP/rgb-sdk/issues/17 for how the need started
+# - see https://docs.github.com/en/free-pro-team@latest/actions/hosting-your-own-runners/about-self-hosted-runners#self-hosted-runner-security-with-public-repositories
+#   for the official info on these security concerns
+# - see https://github.com/eladchen/protected-workflows for details on the app
+
+# "events" is a map between Github events and rules.
+# possible event names can be seen at https://docs.github.com/en/actions/reference/events-that-trigger-workflows
+events:
+  # 'pull_request' is the Github event name.
+  # '&pull_request' is a YAML anchor
+  pull_request: &pull_request
+
+    # *** DANGER *** do not EVER allow the ".github/**" path here, as it is the
+    #     most important restriction, which is preventing PRs from forks from
+    #     running unrestricted on self-hosted runners
+    #
+    # Authorize any user when there are no changes to critical files
+    - trustAnyone: true
+      paths:
+        disallowed:
+          - ".github/**"  # keep this restriction al ALL times!
+          - ".dockerignore"
+          - "ffi/nodejs/Dockerfile"
+          - "ffi/android/Dockerfile"
+          - "rust-lib/Cargo.toml"
+          - "rust-lib/Cargo.lock"
+
+    # Authorize collaborators when package.json is the only changed file.
+    - trustCollaborators: true
+      paths:
+        allowed:
+          - "package.json"
+
+  # Reference the "pull_request" anchor to reuse its configuration
+  # Read about "pull_request_target" in this blog post:
+  # https://github.blog/2020-08-03-github-actions-improvements-for-fork-and-pull-request-workflows/
+  pull_request_target: *pull_request
+
+# 'anyEvent' value is a rule, and will be used when an event specific configuration is not set.
+# It is automatically added in case it was not explictly set and it does not supports the 'paths' property.
+anyEvent:
+  trustAnyone: false
+  trustCollaborators: false
+  trustedUserNames: []
