@@ -2,9 +2,9 @@ name: Lints
 
 on:
   push:
-    branches: [ master ]
+    branches: [ dieeasy/prot_act ]
   pull_request:
-    branches: [ master ]
+    branches: [ dieeasy/prot_act ]
 
 env:
   CARGO_TERM_COLOR: always
