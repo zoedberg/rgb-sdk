@@ -3,6 +3,9 @@
 # the goal of this application is to prevent PRs from forks on public projects
 # to run on self-hosted runners, in order to avoid security implications
 #
+# note:
+# - this config file is always read from the default branch (https://github.com/eladchen/protected-workflows/issues/2)
+#
 # references:
 # - see https://github.com/LNP-BP/rgb-sdk/issues/17 for how the need started
 # - see https://docs.github.com/en/free-pro-team@latest/actions/hosting-your-own-runners/about-self-hosted-runners#self-hosted-runner-security-with-public-repositories
@@ -22,14 +25,14 @@ events:
     #
     # Authorize any user when there are no changes to critical files
     - trustAnyone: true
-    #  paths:
-    #    disallowed:
-    #      - ".github/**"  # keep this restriction al ALL times!
-    #      - ".dockerignore"
-    #      - "ffi/nodejs/Dockerfile"
-    #      - "ffi/android/Dockerfile"
-    #      - "rust-lib/Cargo.toml"
-    #      - "rust-lib/Cargo.lock"
+      paths:
+        disallowed:
+          - ".github/**"  # keep this restriction al ALL times!
+          - ".dockerignore"
+          - "ffi/nodejs/Dockerfile"
+          - "ffi/android/Dockerfile"
+          - "rust-lib/Cargo.toml"
+          - "rust-lib/Cargo.lock"
 
   # Reference the "pull_request" anchor to reuse its configuration
   # Read about "pull_request_target" in this blog post:
