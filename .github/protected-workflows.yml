@@ -24,6 +24,8 @@ events:
     #     running unrestricted on self-hosted runners
     #
     # Authorize any user when there are no changes to critical files
+    # Authorize organization members unconditionally
+    # Authorize list of users
     - trustAnyone: true
       paths:
         disallowed:
@@ -33,6 +35,9 @@ events:
           - "ffi/android/Dockerfile"
           - "rust-lib/Cargo.toml"
           - "rust-lib/Cargo.lock"
+    - trustOrgMembers: true
+    - trustedUserNames:
+      - "dieeasy"
 
   # Reference the "pull_request" anchor to reuse its configuration
   # Read about "pull_request_target" in this blog post:
@@ -40,12 +45,13 @@ events:
   pull_request_target: *pull_request
 
   # allow everyone with push access to run workflows unrestricted
-  push:
-    - trustAnyone: true
+  #push:
+  #  - trustAnyone: true
 
 # 'anyEvent' value is a rule, and will be used when an event specific configuration is not set.
 # It is automatically added in case it was not explictly set and it does not supports the 'paths' property.
 anyEvent:
   trustAnyone: false
   trustCollaborators: false
+  trustOrgMembers: false
   trustedUserNames: []
