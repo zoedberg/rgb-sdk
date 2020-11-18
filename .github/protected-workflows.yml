@@ -22,20 +22,14 @@ events:
     #
     # Authorize any user when there are no changes to critical files
     - trustAnyone: true
-      paths:
-        disallowed:
-          - ".github/**"  # keep this restriction al ALL times!
-          - ".dockerignore"
-          - "ffi/nodejs/Dockerfile"
-          - "ffi/android/Dockerfile"
-          - "rust-lib/Cargo.toml"
-          - "rust-lib/Cargo.lock"
-
-    # Authorize collaborators when package.json is the only changed file.
-    - trustCollaborators: true
-      paths:
-        allowed:
-          - "package.json"
+    #  paths:
+    #    disallowed:
+    #      - ".github/**"  # keep this restriction al ALL times!
+    #      - ".dockerignore"
+    #      - "ffi/nodejs/Dockerfile"
+    #      - "ffi/android/Dockerfile"
+    #      - "rust-lib/Cargo.toml"
+    #      - "rust-lib/Cargo.lock"
 
   # Reference the "pull_request" anchor to reuse its configuration
   # Read about "pull_request_target" in this blog post:
