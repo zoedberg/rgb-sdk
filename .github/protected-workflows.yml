@@ -36,6 +36,10 @@ events:
   # https://github.blog/2020-08-03-github-actions-improvements-for-fork-and-pull-request-workflows/
   pull_request_target: *pull_request
 
+  # allow everyone with push access to run workflows unrestricted
+  push:
+    - trustAnyone: true
+
 # 'anyEvent' value is a rule, and will be used when an event specific configuration is not set.
 # It is automatically added in case it was not explictly set and it does not supports the 'paths' property.
 anyEvent:
